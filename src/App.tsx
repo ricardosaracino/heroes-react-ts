@@ -1,8 +1,7 @@
 import * as React from 'react';
-import './App.css';
 
-import {Hero} from './Hero';
-import {Navbar} from './Navbar';
+import Hero from './Hero';
+import Navbar from './Navbar';
 
 
 // https://github.com/tastejs/todomvc/tree/master/examples/typescript-react/js
@@ -14,9 +13,11 @@ class App extends React.Component {
 
             <div className="App">
 
-                <Navbar/>
+                <Navbar title={'Tour of Heroes'}/>
 
-                <Hero name={"Locag"} id={"1"}/>
+                <div>
+                    <Hero name={'Logan'}/>
+                </div>
             </div>
         );
     }

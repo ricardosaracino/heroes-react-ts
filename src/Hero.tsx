@@ -1,27 +1,64 @@
-import * as React from "react";
+import * as React from 'react';
 
+import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {FlatButton} from 'material-ui';
-
-import {lightBaseTheme, MuiThemeProvider} from 'material-ui/styles';
-
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {TextField} from 'material-ui';
 
 
 interface IHeroProps {
-    id: string,
+    id?: string,
     name: string,
+    age?: number,
 }
 
-export class Hero extends React.Component<IHeroProps, {}> {
+// this isn't necessary
+type ComponentClassNames =
+    | 'root'
+    | 'textField'
+
+
+const style: StyleRules<ComponentClassNames> = {
+    root: {
+        height: 200,
+        width: 300,
+        marginLeft: 60,
+    },
+
+    textField: {
+        width: 200,
+    },
+};
+
+class Hero extends React.Component<IHeroProps & WithStyles<ComponentClassNames>, {}> {
+
+    public static defaultProps: Partial<IHeroProps> = {
+        age: 12
+    };
 
     public render() {
+
+        const {classes} = this.props;
+
         return (
-            <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
+            <div className={classes.root}>
 
+                <h1>Hero</h1>
 
-                <FlatButton label={"Save"}/>
-            </MuiThemeProvider>
+                <TextField
+                    label="Name"
+                    className={classes.textField}
+                    margin="normal"
+                />
+
+                <TextField
+                    label="Age"
+                    className={classes.textField}
+                    margin="normal"
+                />
+
+            </div>
         );
     }
 }
+
+export default withStyles(style)<IHeroProps>(Hero);

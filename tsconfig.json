@@ -17,6 +17,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true
   },
+
   "exclude": [
     "node_modules",
     "build",
