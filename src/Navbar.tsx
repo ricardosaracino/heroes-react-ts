@@ -3,14 +3,12 @@ import * as React from 'react';
 import {Route, Switch} from 'react-router';
 import {NavLink} from 'react-router-dom';
 
-import {AppBar, Divider, Drawer, List, ListItem, ListItemText, Toolbar, Typography} from 'material-ui';
+import {AppBar, Divider, Drawer, List, ListItem, ListItemText, Theme, Toolbar, Typography} from 'material-ui';
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import Hero from './Hero';
 import Home from './Home';
-import NoMatch from "./NoMatch";
-
-
+import NoMatch from './NoMatch';
 
 interface INavbarProps {
     title: string,
@@ -27,7 +25,7 @@ type ComponentClassNames =
 
 const drawerWidth = 240;
 
-const style: StyleRules<ComponentClassNames> = {
+const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
 
     root: {
         flexGrow: 1,
@@ -39,14 +37,12 @@ const style: StyleRules<ComponentClassNames> = {
     },
 
     appBar: {
-        zIndex: 1200 + 1,// theme.zIndex.drawer + 1,
+        zIndex: theme.zIndex.drawer + 1,
     },
 
     drawerPaper: {
         position: 'relative',
         width: drawerWidth,
-
-        paddingTop: 70, // hax
     },
 
     navLink: {
@@ -55,24 +51,22 @@ const style: StyleRules<ComponentClassNames> = {
 
     content: {
         flexGrow: 1,
-        // backgroundColor: theme.palette.background.default,
-        // padding: theme.spacing.unit * 3,
+        backgroundColor: theme.palette.background.default,
+        padding: theme.spacing.unit * 3,
         minWidth: 0, // So the Typography noWrap works
-
-        paddingTop: 70, // hax
     },
 
-    toolbar: {},// style1.mixins.toolbar,
-};
+    toolbar: theme.mixins.toolbar,
+});
 
 
 // https://material-ui-next.com/demos/app-bar/
 
-// routing https://github.com/IrfanBaqui/react-router-v4-tutorial/blob/master/09_Router_Config/src/App.js
-
+// https://github.com/IrfanBaqui/react-router-v4-tutorial/blob/master/09_Router_Config/src/App.js
+// https://github.com/mui-org/material-ui/tree/v1-beta/docs/src/pages/demos
+// https://github.com/tastejs/todomvc/tree/master/examples/typescript-react/js
 // https://github.com/mui-org/material-ui/tree/v1-beta/examples/create-react-app-with-typescript
 // https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
-// https://github.com/mui-org/material-ui/tree/v1-beta/docs/src/pages/demos
 // https://medium.com/@liangchun/integrating-material-ui-next-with-your-react-typescript-project-80847f7eab64
 
 class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, {}> {
@@ -85,8 +79,6 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
             <div className={classes.root}>
                 <AppBar position="absolute" className={classes.appBar}>
                     <Toolbar>
-
-
                         <Typography variant="title" color="inherit">
                             {title}
                         </Typography>
