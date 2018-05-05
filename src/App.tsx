@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import Hero from './Hero';
 import Navbar from './Navbar';
 
 
@@ -10,15 +9,17 @@ import Navbar from './Navbar';
 class App extends React.Component {
     public render() {
         return (
-
             <div className="App">
+
 
                 <Navbar title={'Tour of Heroes'}/>
 
-                <div>
-                    <Hero name={'Logan'}/>
-                </div>
+
+
+
             </div>
+
+
         );
     }
 }

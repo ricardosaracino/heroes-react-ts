@@ -1,28 +1,15 @@
-/* tslint:disable */
-
 import * as React from 'react';
 
-import {AppBar, IconButton} from 'material-ui';
+import {Route, Switch} from 'react-router';
+import {NavLink} from 'react-router-dom';
 
-import Toolbar from 'material-ui/Toolbar';
-
-import Typography from 'material-ui/Typography';
-
-import Button from 'material-ui/Button';
-
-import MenuIcon from '@material-ui/icons/Menu';
-
+import {AppBar, Divider, Drawer, List, ListItem, ListItemText, Toolbar, Typography} from 'material-ui';
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import Drawer from 'material-ui/Drawer';
-
-import Divider from 'material-ui/Divider';
-
-import List from 'material-ui/List';
-
-
-import {otherMailFolderListItems, mailFolderListItems} from './titledata';
 import Hero from './Hero';
+import Home from './Home';
+import NoMatch from "./NoMatch";
+
 
 
 interface INavbarProps {
@@ -31,58 +18,61 @@ interface INavbarProps {
 
 type ComponentClassNames =
     | 'root'
-    | 'flex'
     | 'appBar'
-    | 'menuButton'
     | 'drawerPaper'
-    | 'primary'
-    | 'toolbar'
+    | 'navLink'
     | 'content'
+    | 'toolbar'
 
 
 const drawerWidth = 240;
 
-// const style: StyleRules<ComponentClassNames> = (theme : Theme) = ({
-
-
 const style: StyleRules<ComponentClassNames> = {
+
     root: {
         flexGrow: 1,
-    },
-    flex: {
-        flex: 1,
+        height: 430,
+        zIndex: 1,
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex',
     },
 
     appBar: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
+        zIndex: 1200 + 1,// theme.zIndex.drawer + 1,
     },
-
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
-    },
-
 
     drawerPaper: {
         position: 'relative',
         width: drawerWidth,
+
+        paddingTop: 70, // hax
     },
 
-    toolbar:  {},//theme.mixins.toolbar,
+    navLink: {
+        textDecoration: "none"
+    },
 
     content: {
         flexGrow: 1,
         // backgroundColor: theme.palette.background.default,
         // padding: theme.spacing.unit * 3,
+        minWidth: 0, // So the Typography noWrap works
+
+        paddingTop: 70, // hax
     },
 
-    primary: {},
+    toolbar: {},// style1.mixins.toolbar,
 };
 
-// https://github.com/mui-org/material-ui/tree/v1-beta/docs/src/pages/demos
+
 // https://material-ui-next.com/demos/app-bar/
-// https://material-ui-next.com/demos/drawers/
+
+// routing https://github.com/IrfanBaqui/react-router-v4-tutorial/blob/master/09_Router_Config/src/App.js
+
+// https://github.com/mui-org/material-ui/tree/v1-beta/examples/create-react-app-with-typescript
+// https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
+// https://github.com/mui-org/material-ui/tree/v1-beta/docs/src/pages/demos
 // https://medium.com/@liangchun/integrating-material-ui-next-with-your-react-typescript-project-80847f7eab64
 
 class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, {}> {
@@ -93,37 +83,50 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
 
         return (
             <div className={classes.root}>
-                <AppBar className={classes.appBar} position="static">
+                <AppBar position="absolute" className={classes.appBar}>
                     <Toolbar>
-                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                            <MenuIcon/>
 
-                        </IconButton>
-                        <Typography className={classes.flex} variant="title" color="inherit">
+
+                        <Typography variant="title" color="inherit">
                             {title}
                         </Typography>
-                        <Button color="inherit">Login</Button>
-
                     </Toolbar>
                 </AppBar>
-
                 <Drawer
                     variant="permanent"
                     classes={{
                         paper: classes.drawerPaper,
                     }}
-                    anchor="left"
                 >
-
+                    <div className={classes.toolbar}/>
+                    <List>
+                        <NavLink className={classes.navLink} to="/" activeClassName="active">
+                            <ListItem button={true}>
+                                <ListItemText>Home</ListItemText>
+                            </ListItem>
+                        </NavLink>
+                    </List>
+                    <List>
+                        <NavLink className={classes.navLink} to="/hero" activeClassName="active">
+                            <ListItem button={true}>
+                                <ListItemText>Hero</ListItemText>
+                            </ListItem>
+                        </NavLink>
+                    </List>
                     <Divider/>
-                    <List>{mailFolderListItems}</List>
-                    <Divider/>
-                    <List>{otherMailFolderListItems}</List>
+                    <List>
+                        <ListItem button={true}>
+                            <ListItemText>Logout</ListItemText>
+                        </ListItem>
+                    </List>
                 </Drawer>
-
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    <Hero name={'Logan'}/>
+                    <Switch>
+                        <Route path="/" component={Home} exact={true}/>
+                        <Route path="/Hero" component={Hero}/>
+                        <Route component={NoMatch}/>
+                    </Switch>
                 </main>
             </div>
         );
