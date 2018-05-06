@@ -7,11 +7,91 @@ import {AppBar, Divider, Drawer, List, ListItem, ListItemText, Theme, Toolbar, T
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import Hero from './Hero';
+import HeroTable from './HeroTable';
 import Home from './Home';
 import NoMatch from './NoMatch';
 
-interface INavbarProps {
-    title: string,
+
+import { INavbarProps }  from './interfaces';
+
+
+// https://material-ui-next.com/demos/app-bar/
+// https://jaysoo.ca/2015/09/26/typed-react-and-redux/
+// https://github.com/IrfanBaqui/react-router-v4-tutorial/blob/master/09_Router_Config/src/App.js
+// https://github.com/mui-org/material-ui/tree/v1-beta/docs/src/pages/demos
+// https://github.com/tastejs/todomvc/tree/master/examples/typescript-react/js
+// https://github.com/mui-org/material-ui/tree/v1-beta/examples/create-react-app-with-typescript
+// https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
+// https://medium.com/@liangchun/integrating-material-ui-next-with-your-react-typescript-project-80847f7eab64
+
+
+// authentication https://levelup.gitconnected.com/react-and-redux-with-typescript-da0c37537a79
+// https://www.javascriptstuff.com/react-ajax-best-practices/
+// https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
+// https://github.com/bitinn/node-fetch
+
+
+class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, {}> {
+
+    public render() {
+
+        const {classes, title = ''} = this.props;
+
+        return (
+            <div className={classes.root}>
+                <AppBar position="absolute" className={classes.appBar}>
+                    <Toolbar>
+                        <Typography variant="title" color="inherit">
+                            {title}
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Drawer
+                    variant="permanent"
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                >
+                    <div className={classes.toolbar}/>
+                    <List>
+                        <NavLink className={classes.navLink} to="/" activeClassName="active">
+                            <ListItem button={true}>
+                                <ListItemText>Home</ListItemText>
+                            </ListItem>
+                        </NavLink>
+                    </List>
+                    <List>
+                        <NavLink className={classes.navLink} to="/heroes" activeClassName="active">
+                            <ListItem button={true}>
+                                <ListItemText>Heroes</ListItemText>
+                            </ListItem>
+                        </NavLink>
+                    </List> <List>
+                    <NavLink className={classes.navLink} to="/hero" activeClassName="active">
+                        <ListItem button={true}>
+                            <ListItemText>Add Hero</ListItemText>
+                        </ListItem>
+                    </NavLink>
+                </List>
+                    <Divider/>
+                    <List>
+                        <ListItem button={true}>
+                            <ListItemText>Logout</ListItemText>
+                        </ListItem>
+                    </List>
+                </Drawer>
+                <main className={classes.content}>
+                    <div className={classes.toolbar}/>
+                    <Switch>
+                        <Route path="/" component={Home} exact={true}/>
+                        <Route path="/hero" component={Hero}/>
+                        <Route path="/heroes" component={HeroTable}/>
+                        <Route component={NoMatch}/>
+                    </Switch>
+                </main>
+            </div>
+        );
+    }
 }
 
 type ComponentClassNames =
@@ -58,71 +138,5 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
 
     toolbar: theme.mixins.toolbar,
 });
-
-
-// https://material-ui-next.com/demos/app-bar/
-
-// https://github.com/IrfanBaqui/react-router-v4-tutorial/blob/master/09_Router_Config/src/App.js
-// https://github.com/mui-org/material-ui/tree/v1-beta/docs/src/pages/demos
-// https://github.com/tastejs/todomvc/tree/master/examples/typescript-react/js
-// https://github.com/mui-org/material-ui/tree/v1-beta/examples/create-react-app-with-typescript
-// https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
-// https://medium.com/@liangchun/integrating-material-ui-next-with-your-react-typescript-project-80847f7eab64
-
-class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, {}> {
-
-    public render() {
-
-        const {classes, title = ''} = this.props;
-
-        return (
-            <div className={classes.root}>
-                <AppBar position="absolute" className={classes.appBar}>
-                    <Toolbar>
-                        <Typography variant="title" color="inherit">
-                            {title}
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    <div className={classes.toolbar}/>
-                    <List>
-                        <NavLink className={classes.navLink} to="/" activeClassName="active">
-                            <ListItem button={true}>
-                                <ListItemText>Home</ListItemText>
-                            </ListItem>
-                        </NavLink>
-                    </List>
-                    <List>
-                        <NavLink className={classes.navLink} to="/hero" activeClassName="active">
-                            <ListItem button={true}>
-                                <ListItemText>Hero</ListItemText>
-                            </ListItem>
-                        </NavLink>
-                    </List>
-                    <Divider/>
-                    <List>
-                        <ListItem button={true}>
-                            <ListItemText>Logout</ListItemText>
-                        </ListItem>
-                    </List>
-                </Drawer>
-                <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    <Switch>
-                        <Route path="/" component={Home} exact={true}/>
-                        <Route path="/Hero" component={Hero}/>
-                        <Route component={NoMatch}/>
-                    </Switch>
-                </main>
-            </div>
-        );
-    }
-}
 
 export default withStyles(style)<INavbarProps>(Navbar);
