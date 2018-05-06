@@ -1,15 +1,16 @@
-export interface IHero {
+
+interface IHeroProps {
     id?: string,
     name?: string,
-    age?: number,
+    age?: string,
 }
 
-export interface IHeroProps {
-    id?: string,
-    name?: string,
-    age?: number,
+export class HeroModel implements IHeroProps{
+    public id: string;
+    public name: string;
+    public age: string;
 }
 
-export interface INavbarProps {
+interface INavbarProps {
     title: string,
 }
