@@ -5,7 +5,8 @@
 
   "rules": {
     "object-literal-sort-keys": false,
-    "no-console": false
+    "no-console": false,
+    "variable-name": [true, "allow-leading-underscore"]
   },
 
   "linterOptions": {

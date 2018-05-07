@@ -27,7 +27,6 @@ interface IRouteParams {
 
 class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithStyles<ComponentClassNames>, IHeroState> {
 
-
     private heroesUrl = 'http://localhost:8030/heroes';
 
     constructor(props: any) {
@@ -36,8 +35,8 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
         this.state = {hero: new HeroModel, open: false};
 
         // THIS WORKS
-        this.state.hero.age = '32';
-
+        this.state.hero.age = 'f';
+        this.state.hero.name = 'f';
 
         this.handleChange = this.handleChange.bind(this);
 
@@ -86,9 +85,9 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
 
     public handleDelete(event: React.FormEvent<any>) {
 
-        this.updateHero()
+        this.deleteHero()
             .then(response => {
-                this.setState({hero: response});
+               // router.push('/heroes')
             })
             .catch(error => {
                 this.handleOpen(error.message);
@@ -132,7 +131,6 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
         });
     }
 
-
     /**
      * DELETE
      * @returns {Promise<HeroModel>}
@@ -142,7 +140,7 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
         return fetch(this.heroesUrl, {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(this.state.hero)
+            body: JSON.stringify(this.state.hero) // todo just need _rev & _id
         }).then(response => {
 
             if (!response.ok) {
