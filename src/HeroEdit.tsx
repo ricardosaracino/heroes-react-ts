@@ -6,51 +6,55 @@ import {Button, Snackbar, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {IHeroProps} from './interfaces';
-
+import {HeroModel} from "./HeroModel";
 
 interface IHeroState {
-    id?: string,
-    name: string,
-    age: string,
+
+    hero: HeroModel,
+
     open: boolean,
     message?: string;
 }
 
-
 interface IRouteParams {
     id: string
 }
-
 
 // https://github.com/tastejs/todomvc/blob/master/examples/typescript-react/js/interfaces.d.ts
 // https://hackernoon.com/why-im-switching-from-angular-to-react-and-redux-in-2018-cb48be00fda7
 // https://medium.com/@tmkelly28/handling-multiple-form-inputs-in-react-c5eb83755d15
 // https://stackoverflow.com/questions/23481061/reactjs-state-vs-prop
 
-class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & IHeroProps & WithStyles<ComponentClassNames>, IHeroState> {
+class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithStyles<ComponentClassNames>, IHeroState> {
 
-    public state: IHeroState;
 
     private heroesUrl = 'http://localhost:8030/heroes';
 
     constructor(props: any) {
         super(props);
 
-        this.state = {name: '', age: '', open: false};
+        this.state = {hero: new HeroModel, open: false};
+
+        // THIS WORKS
+        this.state.hero.age = '32';
+
 
         this.handleChange = this.handleChange.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     public componentDidMount() {
         this.getHero()
             .then(response => {
-                this.setState({
-                    // hero: response
-                    name: response.name, age: response.age
-                });
+
+                // THIS DOES NOT WORK
+                this.setState({hero: response});
+
+                // THIS DOES NOT WORK
+                // this.setState({hero: {...this.state.hero, name: 'asasdfasdfsadf'}});
             })
             .catch(error => {
                 this.handleOpen(error.message); // body stream already read
@@ -62,19 +66,29 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & IHero
     }
 
     public handleChange(event: React.FormEvent<any>) {
+
         const input: any = event.target;
 
-        this.setState({[input.name]: input.value});
+        // THIS DOES WORK
+        this.setState({hero: {...this.state.hero, [input.name]: input.value}});
     }
 
     public handleSubmit(event: React.FormEvent<any>) {
 
-        this.addHero()
+        this.updateHero()
             .then(response => {
-                this.setState({
-                    id: response.id
-                });
+                console.log('udpated');
+            })
+            .catch(error => {
+                this.handleOpen(error.message);
+            });
+    }
 
+    public handleDelete(event: React.FormEvent<any>) {
+
+        this.updateHero()
+            .then(response => {
+                this.setState({hero: response});
             })
             .catch(error => {
                 this.handleOpen(error.message);
@@ -83,10 +97,10 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & IHero
 
     /**
      * GET
-     * @returns {Promise<HeroModel>}
+     * @returns {Promise<>}
      */
 
-    public getHero(): Promise<any> {
+    public getHero(): Promise<HeroModel> {
 
         const id = this.props.match.params.id;
 
@@ -100,15 +114,35 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & IHero
     }
 
     /**
-     * POST
+     * PUT
      * @returns {Promise<HeroModel>}
      */
-    public addHero(): Promise<any> {
+    public updateHero(): Promise<any> {
 
         return fetch(this.heroesUrl, {
-            method: 'POST',
+            method: 'PUT',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name: this.state.name, age: this.state.age})
+            body: JSON.stringify(this.state.hero)
+        }).then(response => {
+
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
+        });
+    }
+
+
+    /**
+     * DELETE
+     * @returns {Promise<HeroModel>}
+     */
+    public deleteHero(): Promise<any> {
+
+        return fetch(this.heroesUrl, {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(this.state.hero)
         }).then(response => {
 
             if (!response.ok) {
@@ -131,7 +165,7 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & IHero
                     label='Name'
                     name={'name'}
                     className={classes.input}
-                    margin='normal'
+                    value={this.state.hero.name}
                     onChange={this.handleChange}
 
                 />
@@ -140,7 +174,8 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & IHero
                     label='Age'
                     name={'age'}
                     className={classes.input}
-                    margin='normal'
+                    value={this.state.hero.age}
+                    onChange={this.handleChange}
                 />
 
                 <Button
@@ -150,6 +185,15 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & IHero
                     onClick={this.handleSubmit}
                 >
                     Save
+                </Button>
+
+                <Button
+                    variant='raised'
+                    color='secondary'
+                    className={classes.button}
+                    onClick={this.handleDelete}
+                >
+                    Delete
                 </Button>
 
                 <Snackbar
@@ -188,4 +232,4 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     },
 });
 
-export default withStyles(style)<IHeroProps>(HeroEdit);
+export default withStyles(style)(HeroEdit);

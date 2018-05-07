@@ -4,11 +4,18 @@ import {Button, Snackbar, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {IHeroProps} from './interfaces';
+
+import {HeroModel} from "./HeroModel";
+
+interface IHeroProps {
+    id?: string,
+    name?: string,
+    age?: string,
+}
 
 
 interface IHeroState {
-    id?: string,
+    id: string,
     name: string,
     age: string,
     open: boolean,
@@ -29,7 +36,7 @@ class HeroCreate extends React.Component<IHeroProps & WithStyles<ComponentClassN
     constructor(props: any) {
         super(props);
 
-        this.state = {name: '', age: '', open: false};
+        this.state = {id:'', name: '', age: '', open: false};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -63,7 +70,7 @@ class HeroCreate extends React.Component<IHeroProps & WithStyles<ComponentClassN
      * POST
      * @returns {Promise<HeroModel>}
      */
-    public addHero(): Promise<any> {
+    public addHero(): Promise<HeroModel> {
 
         return fetch(this.heroesUrl, {
             method: 'POST',

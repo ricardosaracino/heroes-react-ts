@@ -6,7 +6,7 @@ import {Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, Theme
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {HeroModel} from './interfaces';
+import {HeroModel} from './HeroModel';
 
 class HeroTable extends React.Component<WithStyles<ComponentClassNames>, {}> {
 
@@ -40,9 +40,9 @@ class HeroTable extends React.Component<WithStyles<ComponentClassNames>, {}> {
 
     /**
      * GET
-     * @returns {Promise<HeroModel>}
+     * @returns {Promise<>}
      */
-    public getHeroes(): Promise<HeroModel> {
+    public getHeroes(): Promise<any> {
         return fetch(this.heroesUrl).then(response => {
 
             if (!response.ok) {

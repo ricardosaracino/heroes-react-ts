@@ -13,7 +13,8 @@ import Home from './Home';
 import NoMatch from './NoMatch';
 
 
-import {INavbarProps} from './interfaces';
+
+
 
 
 // https://material-ui-next.com/demos/app-bar/
@@ -34,6 +35,11 @@ import {INavbarProps} from './interfaces';
 
 // http://davidwalsh.name/fetch
 // https://stackoverflow.com/questions/41103360/how-to-use-fetch-in-typescript
+
+
+interface INavbarProps {
+    title: string,
+}
 
 class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, {}> {
 
