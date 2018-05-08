@@ -128,7 +128,7 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
 
         return (
             <div className={classes.root}>
-                <AppBar className={classes.appBar}>
+                <AppBar className={classes.appBar} position="sticky">
                     <Toolbar>
                         <IconButton
                             color="inherit"
@@ -203,7 +203,7 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
         width: '100%',
     },
     appBar: {
-        position: 'absolute',
+        position: 'fixed',
         marginLeft: drawerWidth,
         [theme.breakpoints.up('md')]: {
             width: `calc(100% - ${drawerWidth}px)`,
