@@ -27,14 +27,27 @@ import NoMatch from './NoMatch';
 // https://medium.com/@liangchun/integrating-material-ui-next-with-your-react-typescript-project-80847f7eab64
 
 
+// https://itnext.io/using-advanced-design-patterns-to-create-flexible-and-reusable-react-components-part-3-render-d7517dfe72bc
+
+
 // authentication https://levelup.gitconnected.com/react-and-redux-with-typescript-da0c37537a79
 // https://www.javascriptstuff.com/react-ajax-best-practices/
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
 // https://github.com/bitinn/node-fetch
 
+// https://github.com/tastejs/todomvc/blob/master/examples/typescript-react/js/interfaces.d.ts
+// https://hackernoon.com/why-im-switching-from-angular-to-react-and-redux-in-2018-cb48be00fda7
+// https://medium.com/@tmkelly28/handling-multiple-form-inputs-in-react-c5eb83755d15
+// https://stackoverflow.com/questions/23481061/reactjs-state-vs-prop
+
 
 // http://davidwalsh.name/fetch
 // https://stackoverflow.com/questions/41103360/how-to-use-fetch-in-typescript
+
+// https://github.com/tastejs/todomvc/blob/master/examples/typescript-react/js/interfaces.d.ts
+// https://hackernoon.com/why-im-switching-from-angular-to-react-and-redux-in-2018-cb48be00fda7
+// https://medium.com/@tmkelly28/handling-multiple-form-inputs-in-react-c5eb83755d15
+// https://stackoverflow.com/questions/23481061/reactjs-state-vs-prop
 
 
 interface INavbarProps {
