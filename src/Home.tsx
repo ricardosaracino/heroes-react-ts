@@ -9,7 +9,8 @@ type ComponentClassNames =
 
 const style: StyleRules<ComponentClassNames> = {
     root: {
-        marginLeft: 60,
+        width: '100%',
+        overflowX: 'auto',
     },
 };
 

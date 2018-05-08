@@ -3,8 +3,11 @@ import * as React from 'react';
 import {Route, Switch} from 'react-router';
 import {NavLink} from 'react-router-dom';
 
-import {AppBar, Divider, Drawer, List, ListItem, ListItemText, Theme, Toolbar, Typography} from 'material-ui';
+import {AppBar, Divider, Drawer, Hidden, IconButton} from 'material-ui';
+import {List, ListItem, ListItemText, Theme, Toolbar, Typography} from 'material-ui';
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
+
+import MenuIcon from '@material-ui/icons/Menu';
 
 import HeroCreate from './HeroCreate';
 import HeroEdit from './HeroEdit';
@@ -13,11 +16,10 @@ import Home from './Home';
 import NoMatch from './NoMatch';
 
 
+// https://reacttraining.com/react-router/web/guides/philosophy
+// https://material-ui-next.com/demos/
 
 
-
-
-// https://material-ui-next.com/demos/app-bar/
 // https://jaysoo.ca/2015/09/26/typed-react-and-redux/
 // https://github.com/IrfanBaqui/react-router-v4-tutorial/blob/master/09_Router_Config/src/App.js
 // https://github.com/tastejs/todomvc/tree/master/examples/typescript-react/js
@@ -49,70 +51,128 @@ import NoMatch from './NoMatch';
 // https://medium.com/@tmkelly28/handling-multiple-form-inputs-in-react-c5eb83755d15
 // https://stackoverflow.com/questions/23481061/reactjs-state-vs-prop
 
+// https://github.com/react-navigation/react-navigation/tree/master/src/views/Drawer
 
 interface INavbarProps {
-    title: string,
+    title: string
 }
 
-class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, {}> {
+interface INavbarState {
+    mobileOpen: boolean,
+}
 
+class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, INavbarState> {
+
+    constructor(props: any) {
+        super(props);
+
+        this.state = {mobileOpen: false};
+
+        this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
+        this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    }
+
+    public handleDrawerToggle() {
+        this.setState({mobileOpen: !this.state.mobileOpen});
+    };
+
+    public handleDrawerClose() {
+        this.setState({mobileOpen: false});
+    };
 
     public render() {
 
         const {classes, title = ''} = this.props;
 
-        return (
-            <div className={classes.root}>
-                <AppBar position="absolute" className={classes.appBar}>
-                    <Toolbar>
-                        <Typography variant="title" color="inherit">
-                            {title}
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    <div className={classes.toolbar}/>
-                    <List>
-                        <NavLink className={classes.navLink} to="/" activeClassName="active">
-                            <ListItem button={true}>
-                                <ListItemText>Home</ListItemText>
-                            </ListItem>
-                        </NavLink>
-                    </List>
-                    <List>
-                        <NavLink className={classes.navLink} to="/heroes" activeClassName="active">
-                            <ListItem button={true}>
-                                <ListItemText>Heroes</ListItemText>
-                            </ListItem>
-                        </NavLink>
-                    </List> <List>
+        const drawer = (
+            <div role="button" onClick={this.handleDrawerClose}>
+                <List>
+                    <NavLink className={classes.navLink} to="/" activeClassName="active">
+                        <ListItem button={true}>
+                            <ListItemText>Home</ListItemText>
+                        </ListItem>
+                    </NavLink>
+                </List>
+                <List>
+                    <NavLink className={classes.navLink} to="/heroes" activeClassName="active">
+                        <ListItem button={true}>
+                            <ListItemText>Heroes</ListItemText>
+                        </ListItem>
+                    </NavLink>
+                </List>
+                <List>
                     <NavLink className={classes.navLink} to="/hero" activeClassName="active">
                         <ListItem button={true}>
                             <ListItemText>Add Hero</ListItemText>
                         </ListItem>
                     </NavLink>
                 </List>
-                    <Divider/>
-                    <List>
-                        <ListItem button={true}>
-                            <ListItemText>Logout</ListItemText>
-                        </ListItem>
-                    </List>
-                </Drawer>
+                <Divider/>
+                <List>
+                    <ListItem button={true}>
+                        <ListItemText>Logout</ListItemText>
+                    </ListItem>
+                </List>
+            </div>
+        );
+
+        const routes = (
+            <Switch>
+                <Route path="/" component={Home} exact={true}/>
+                <Route path="/hero/:id" component={HeroEdit}/>
+                <Route path="/hero" component={HeroCreate}/>
+                <Route path="/heroes" component={HeroTable}/>
+                <Route component={NoMatch}/>
+            </Switch>
+        );
+
+        return (
+            <div className={classes.root}>
+                <AppBar className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={this.handleDrawerToggle}
+                            className={classes.navIconHide}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant="title" color="inherit" noWrap={true}>
+                            {title}
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Hidden mdUp={true}>
+                    <Drawer
+                        variant="temporary"
+                        anchor='left'
+                        open={this.state.mobileOpen}
+                        onClose={this.handleDrawerToggle}
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        ModalProps={{
+                            keepMounted: true, // Better open performance on mobile.
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
+                <Hidden smDown={true} implementation="css">
+                    <Drawer
+                        variant="permanent"
+                        open={true}
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    <Switch>
-                        <Route path="/" component={Home} exact={true}/>
-                        <Route path="/hero/:id" component={HeroEdit}/>
-                        <Route path="/hero" component={HeroCreate}/>
-                        <Route path="/heroes" component={HeroTable}/>
-                        <Route component={NoMatch}/>
-                    </Switch>
+                    {routes}
                 </main>
             </div>
         );
@@ -122,10 +182,11 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
 type ComponentClassNames =
     | 'root'
     | 'appBar'
+    | 'navIconHide'
+    | 'toolbar'
+    | 'content'
     | 'drawerPaper'
     | 'navLink'
-    | 'content'
-    | 'toolbar'
 
 
 const drawerWidth = 240;
@@ -134,33 +195,40 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
 
     root: {
         flexGrow: 1,
+        height: '100%',
         zIndex: 1,
         overflow: 'hidden',
         position: 'relative',
         display: 'flex',
+        width: '100%',
     },
-
     appBar: {
-        zIndex: theme.zIndex.drawer + 1,
+        position: 'absolute',
+        marginLeft: drawerWidth,
+        [theme.breakpoints.up('md')]: {
+            width: `calc(100% - ${drawerWidth}px)`,
+        },
     },
-
+    navIconHide: {
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
+    },
+    toolbar: theme.mixins.toolbar,
     drawerPaper: {
-        position: 'relative',
         width: drawerWidth,
+        [theme.breakpoints.up('md')]: {
+            position: 'relative',
+        },
     },
-
-    navLink: {
-        textDecoration: "none"
-    },
-
     content: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing.unit * 3,
-        minWidth: 0, // So the Typography noWrap works
     },
-
-    toolbar: theme.mixins.toolbar,
+    navLink: {
+        textDecoration: 'none'
+    },
 });
 
-export default withStyles(style)<INavbarProps>(Navbar);
+export default withStyles(style, {withTheme: true})<INavbarProps>(Navbar);
