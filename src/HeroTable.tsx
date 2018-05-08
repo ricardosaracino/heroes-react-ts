@@ -7,49 +7,40 @@ import {Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, Theme
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import {HeroModel} from './HeroModel';
+import {HeroService} from './HeroService';
 
-class HeroTable extends React.Component<WithStyles<ComponentClassNames>, {}> {
+interface IMessageState {
+    open: boolean,
+    message?: string;
+}
 
-    public state = {
-        heroes: [],
-        open: false,
-        message: '',
-    };
+interface IHeroesState {
+    heroes: HeroModel[],
+}
 
-    private heroesUrl = 'http://localhost:8030/heroes';
+class HeroTable extends React.Component<WithStyles<ComponentClassNames>, IHeroesState & IMessageState> {
+
+    private heroService = new HeroService;
 
     constructor(props: any) {
         super(props);
+        this.state = {heroes:[], open: false};
     }
 
-    public handleOpen(m : string) {
-        this.setState({ open: true, message: m });
+    public handleMessage(m: string) {
+        this.setState({open: true, message: m});
     }
 
     public componentDidMount() {
-        this.getHeroes()
+        this.heroService.getHeroes()
             .then(response => {
                 this.setState({
                     heroes: response
                 });
             })
             .catch(error => {
-                this.handleOpen(error.message);
+                this.handleMessage(error.message);
             });
-    }
-
-    /**
-     * GET
-     * @returns {Promise<>}
-     */
-    public getHeroes(): Promise<any> {
-        return fetch(this.heroesUrl).then(response => {
-
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
-        });
     }
 
     public render() {
@@ -73,7 +64,8 @@ class HeroTable extends React.Component<WithStyles<ComponentClassNames>, {}> {
                             {this.state.heroes.map((hero: HeroModel) => {
                                 return (
                                     <TableRow key={hero.id}>
-                                        <TableCell><NavLink className={classes.navLink} to={`/hero/${hero.id}`} activeClassName='active'>{hero.name}</NavLink></TableCell>
+                                        <TableCell><NavLink className={classes.navLink} to={`/hero/${hero.id}`}
+                                                            activeClassName='active'>{hero.name}</NavLink></TableCell>
                                         <TableCell numeric={true}>{hero.age}</TableCell>
                                     </TableRow>
                                 );

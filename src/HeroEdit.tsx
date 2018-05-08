@@ -1,42 +1,34 @@
 import * as React from 'react';
 
-import {RouteComponentProps} from "react-router";
+import {RouteComponentProps} from 'react-router';
 
 import {Button, Snackbar, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {HeroModel} from "./HeroModel";
+import {HeroModel} from './HeroModel';
+import {HeroService} from './HeroService';
 
-interface IHeroState {
-
-    hero: HeroModel,
-
+interface IMessageState {
     open: boolean,
     message?: string;
+}
+
+interface IHeroState {
+    hero: HeroModel,
 }
 
 interface IRouteParams {
     id: string
 }
+class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithStyles<ComponentClassNames>, IHeroState & IMessageState> {
 
-// https://github.com/tastejs/todomvc/blob/master/examples/typescript-react/js/interfaces.d.ts
-// https://hackernoon.com/why-im-switching-from-angular-to-react-and-redux-in-2018-cb48be00fda7
-// https://medium.com/@tmkelly28/handling-multiple-form-inputs-in-react-c5eb83755d15
-// https://stackoverflow.com/questions/23481061/reactjs-state-vs-prop
-
-class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithStyles<ComponentClassNames>, IHeroState> {
-
-    private heroesUrl = 'http://localhost:8030/heroes';
+    private heroService = new HeroService;
 
     constructor(props: any) {
         super(props);
 
         this.state = {hero: new HeroModel, open: false};
-
-        // THIS WORKS
-        this.state.hero.age = 'f';
-        this.state.hero.name = 'f';
 
         this.handleChange = this.handleChange.bind(this);
 
@@ -46,21 +38,20 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
     }
 
     public componentDidMount() {
-        this.getHero()
-            .then(response => {
 
-                // THIS DOES NOT WORK
-                this.setState({hero: response});
+        if(this.props.match.params.id) {
 
-                // THIS DOES NOT WORK
-                // this.setState({hero: {...this.state.hero, name: 'asasdfasdfsadf'}});
-            })
-            .catch(error => {
-                this.handleOpen(error.message); // body stream already read
-            });
+            this.heroService.getHero(this.props.match.params.id)
+                .then(response => {
+                    this.setState({hero: response});
+                })
+                .catch(error => {
+                    this.handleMessage(error.message); // body stream already read
+                });
+        }
     }
 
-    public handleOpen(m: string) {
+    public handleMessage(m: string) {
         this.setState({open: true, message: m});
     }
 
@@ -68,88 +59,30 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
 
         const input: any = event.target;
 
-        // THIS DOES WORK
         this.setState({hero: {...this.state.hero, [input.name]: input.value}});
     }
 
     public handleSubmit(event: React.FormEvent<any>) {
 
-        this.updateHero()
+        this.heroService.updateHero(this.state.hero)
             .then(response => {
-                console.log('udpated');
+                this.props.history.push('/heroes');
             })
             .catch(error => {
-                this.handleOpen(error.message);
+                this.handleMessage(error.message);
             });
     }
 
     public handleDelete(event: React.FormEvent<any>) {
 
-        this.deleteHero()
+        this.heroService.deleteHero(this.state.hero)
             .then(response => {
-               // router.push('/heroes')
+                this.props.history.push('/heroes');
             })
             .catch(error => {
-                this.handleOpen(error.message);
+                this.handleMessage(error.message);
             });
     }
-
-    /**
-     * GET
-     * @returns {Promise<>}
-     */
-
-    public getHero(): Promise<HeroModel> {
-
-        const id = this.props.match.params.id;
-
-        return fetch(`${this.heroesUrl}/${id}`).then(response => {
-
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
-        });
-    }
-
-    /**
-     * PUT
-     * @returns {Promise<HeroModel>}
-     */
-    public updateHero(): Promise<any> {
-
-        return fetch(this.heroesUrl, {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(this.state.hero)
-        }).then(response => {
-
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
-        });
-    }
-
-    /**
-     * DELETE
-     * @returns {Promise<HeroModel>}
-     */
-    public deleteHero(): Promise<any> {
-
-        return fetch(this.heroesUrl, {
-            method: 'DELETE',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(this.state.hero) // todo just need _rev & _id
-        }).then(response => {
-
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
-        });
-    }
-
 
     public render() {
 
@@ -201,7 +134,7 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
                         'aria-describedby': 'message-id',
                     }}
 
-                    message={<span id="message-id">{this.state.message}</span>}
+                    message={<span id='message-id'>{this.state.message}</span>}
                 />
             </div>
         );
@@ -230,4 +163,4 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     },
 });
 
-export default withStyles(style)(HeroEdit);
+export default (withStyles(style)(HeroEdit));
