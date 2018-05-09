@@ -9,11 +9,11 @@ import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
-import HeroCreate from './HeroCreate';
-import HeroEdit from './HeroEdit';
-import HeroTable from './HeroTable';
-import Home from './Home';
-import NoMatch from './NoMatch';
+import HeroCreate from './components/HeroCreate';
+import HeroEdit from './components/HeroEdit';
+import HeroTable from './components/HeroTable';
+import Home from './components/Home';
+import NoMatch from './components/NoMatch';
 
 
 // https://reacttraining.com/react-router/web/guides/philosophy

@@ -6,8 +6,8 @@ import {Button, Snackbar, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {HeroModel} from './HeroModel';
-import {HeroService} from './HeroService';
+import {HeroModel} from '../HeroModel';
+import {HeroService} from '../HeroService';
 
 interface IMessageState {
     open: boolean,
@@ -130,7 +130,7 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
                 <Snackbar
                     open={this.state.open}
                     autoHideDuration={8000}
-                    SnackbarContentProps={{
+                    ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
 

@@ -6,8 +6,8 @@ import {Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, Theme
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {HeroModel} from './HeroModel';
-import {HeroService} from './HeroService';
+import {HeroModel} from '../HeroModel';
+import {HeroService} from '../HeroService';
 
 interface IMessageState {
     open: boolean,
@@ -77,7 +77,7 @@ class HeroTable extends React.Component<WithStyles<ComponentClassNames>, IHeroes
                 <Snackbar
                     open={this.state.open}
                     autoHideDuration={8000}
-                    SnackbarContentProps={{
+                    ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
 
