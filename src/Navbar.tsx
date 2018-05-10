@@ -53,6 +53,15 @@ import NoMatch from './components/NoMatch';
 
 // https://github.com/react-navigation/react-navigation/tree/master/src/views/Drawer
 
+
+// https://redux.js.org/basics/example-todo-list
+// https://stackoverflow.com/questions/41386427/showing-snackbar-with-react-redux
+
+// https://redux.js.org/basics/example-todo-list#entry-point
+// https://www.valentinog.com/blog/react-redux-tutorial-beginners/
+
+
+
 interface INavbarProps {
     title: string
 }

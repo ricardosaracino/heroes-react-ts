@@ -1,34 +1,39 @@
 import * as React from 'react';
 
-import {NavLink} from "react-router-dom";
+import {connect} from 'react-redux';
 
-import {Paper, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, Theme} from 'material-ui';
+import {NavLink} from 'react-router-dom';
+
+import {Paper, Table, TableBody, TableCell, TableHead, TableRow, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import {HeroModel} from '../HeroModel';
 import {HeroService} from '../HeroService';
 
-interface IMessageState {
-    open: boolean,
-    message?: string;
-}
+import {sendNotification} from '../actions/index';
+
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        sendNotification: (message: string) => dispatch(sendNotification(message))
+    };
+};
 
 interface IHeroesState {
     heroes: HeroModel[],
 }
 
-class HeroTable extends React.Component<WithStyles<ComponentClassNames>, IHeroesState & IMessageState> {
+interface INotificationProps {
+    sendNotification: (message: string) => void
+}
+
+class HeroTable extends React.Component<INotificationProps & WithStyles<ComponentClassNames>, IHeroesState> {
 
     private heroService = new HeroService;
 
     constructor(props: any) {
         super(props);
-        this.state = {heroes:[], open: false};
-    }
-
-    public handleMessage(m: string) {
-        this.setState({open: true, message: m});
+        this.state = {heroes:[]};
     }
 
     public componentDidMount() {
@@ -39,7 +44,7 @@ class HeroTable extends React.Component<WithStyles<ComponentClassNames>, IHeroes
                 });
             })
             .catch(error => {
-                this.handleMessage(error.message);
+                this.props.sendNotification(error.message);
             });
     }
 
@@ -49,9 +54,7 @@ class HeroTable extends React.Component<WithStyles<ComponentClassNames>, IHeroes
 
         return (
             <div className={classes.root}>
-
                 <h1>Heroes</h1>
-
                 <Paper>
                     <Table className={classes.table}>
                         <TableHead>
@@ -73,16 +76,6 @@ class HeroTable extends React.Component<WithStyles<ComponentClassNames>, IHeroes
                         </TableBody>
                     </Table>
                 </Paper>
-
-                <Snackbar
-                    open={this.state.open}
-                    autoHideDuration={8000}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-
-                    message={<span id='message-id'>{this.state.message}</span>}
-                />
             </div>
         );
     }
@@ -112,4 +105,4 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
 });
 
 
-export default withStyles(style)(HeroTable);
+export default connect(null, mapDispatchToProps)(withStyles(style)(HeroTable));
