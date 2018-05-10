@@ -101,7 +101,6 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
         color: 'black',
         fontWeight: 'bold'
     },
-
 });
 
 

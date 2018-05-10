@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import Navbar from './Navbar';
-import Notification from './Notification';
+
+import Notification from './components/Notification';
 
 class App extends React.Component {
     public render() {

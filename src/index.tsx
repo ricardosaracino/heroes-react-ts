@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
 import {BrowserRouter} from 'react-router-dom';
 
 import {createStore} from 'redux';
@@ -12,11 +13,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import rootReducer from "./reducers/index";
 
-
-
-
 const store = createStore(rootReducer);
-
 
 ReactDOM.render(
     <BrowserRouter>
@@ -26,4 +23,5 @@ ReactDOM.render(
     </BrowserRouter>,
     document.getElementById('root') as HTMLElement
 );
+
 registerServiceWorker();
