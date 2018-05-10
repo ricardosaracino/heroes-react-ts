@@ -19,12 +19,12 @@ const mapDispatchToProps = (dispatch: any) => {
     };
 };
 
-interface IHeroesState {
-    heroes: HeroModel[],
-}
-
 interface INotificationProps {
     sendNotification: (message: string) => void
+}
+
+interface IHeroesState {
+    heroes: HeroModel[],
 }
 
 class HeroTable extends React.Component<INotificationProps & WithStyles<ComponentClassNames>, IHeroesState> {
@@ -44,7 +44,7 @@ class HeroTable extends React.Component<INotificationProps & WithStyles<Componen
                 });
             })
             .catch(error => {
-                this.props.sendNotification(error.message);
+                this.props.sendNotification('herotable: ' +error.message);
             });
     }
 

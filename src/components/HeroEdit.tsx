@@ -1,17 +1,26 @@
 import * as React from 'react';
 
+import {connect} from 'react-redux';
+
 import {RouteComponentProps} from 'react-router';
 
-import {Button, Snackbar, TextField, Theme} from 'material-ui';
+import {Button, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import {HeroModel} from '../HeroModel';
 import {HeroService} from '../HeroService';
 
-interface IMessageState {
-    open: boolean,
-    message?: string;
+import {sendNotification} from '../actions/index';
+
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        sendNotification: (message: string) => dispatch(sendNotification(message))
+    };
+};
+
+interface INotificationProps {
+    sendNotification: (message: string) => void
 }
 
 interface IHeroState {
@@ -21,14 +30,14 @@ interface IHeroState {
 interface IRouteParams {
     id: string
 }
-class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithStyles<ComponentClassNames>, IHeroState & IMessageState> {
+class HeroEdit extends React.Component<INotificationProps & RouteComponentProps<IRouteParams> & WithStyles<ComponentClassNames>, IHeroState> {
 
     private heroService = new HeroService;
 
     constructor(props: any) {
         super(props);
 
-        this.state = {hero: new HeroModel, open: false};
+        this.state = {hero: new HeroModel};
 
         this.handleChange = this.handleChange.bind(this);
 
@@ -46,13 +55,9 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
                     this.setState({hero: response});
                 })
                 .catch(error => {
-                    this.handleMessage(error.message); // body stream already read
+                    this.props.sendNotification('getHero: ' + error.message);
                 });
         }
-    }
-
-    public handleMessage(m: string) {
-        this.setState({open: true, message: m});
     }
 
     public handleChange(event: React.FormEvent<any>) {
@@ -67,9 +72,11 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
         this.heroService.updateHero(this.state.hero)
             .then(response => {
                 this.props.history.push('/heroes');
+
+                this.props.sendNotification('updateHero: ' + response.name);
             })
             .catch(error => {
-                this.handleMessage(error.message);
+                this.props.sendNotification('updateHero: ' + error.message);
             });
     }
 
@@ -78,9 +85,11 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
         this.heroService.deleteHero(this.state.hero)
             .then(response => {
                 this.props.history.push('/heroes');
+
+                this.props.sendNotification('deleteHero: ' + this.state.hero.name);
             })
             .catch(error => {
-                this.handleMessage(error.message);
+                this.props.sendNotification('deleteHero: ' + error.message);
             });
     }
 
@@ -126,16 +135,6 @@ class HeroEdit extends React.Component<RouteComponentProps<IRouteParams> & WithS
                 >
                     Delete
                 </Button>
-
-                <Snackbar
-                    open={this.state.open}
-                    autoHideDuration={8000}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-
-                    message={<span id='message-id'>{this.state.message}</span>}
-                />
             </div>
         );
     }
@@ -163,4 +162,4 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     },
 });
 
-export default (withStyles(style)(HeroEdit));
+export default connect(null, mapDispatchToProps)(withStyles(style)(HeroEdit));
