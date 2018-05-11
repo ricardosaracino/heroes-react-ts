@@ -13,6 +13,7 @@ import HeroCreate from './components/HeroCreate';
 import HeroEdit from './components/HeroEdit';
 import HeroTable from './components/HeroTable';
 import Home from './components/Home';
+import Login from "./components/Login";
 import NoMatch from './components/NoMatch';
 
 
@@ -128,6 +129,7 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
         const routes = (
             <Switch>
                 <Route path="/" component={Home} exact={true}/>
+                <Route path="/Login" component={Login}/>
                 <Route path="/hero/:id" component={HeroEdit}/>
                 <Route path="/hero" component={HeroCreate}/>
                 <Route path="/heroes" component={HeroTable}/>
