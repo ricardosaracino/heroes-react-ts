@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-import {Snackbar, Theme} from 'material-ui';
-
 import {connect} from 'react-redux';
 
-import IconButton from 'material-ui/IconButton';
+import {IconButton, Snackbar, Theme} from 'material-ui';
 
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -134,6 +132,5 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
         height: theme.spacing.unit * 4,
     },
 });
-
 
 export default connect(mapStateToProps)(withStyles(style)(Notification));

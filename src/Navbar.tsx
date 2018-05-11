@@ -13,8 +13,9 @@ import HeroCreate from './components/HeroCreate';
 import HeroEdit from './components/HeroEdit';
 import HeroTable from './components/HeroTable';
 import Home from './components/Home';
-import Login from "./components/Login";
+import Login from './components/Login';
 import NoMatch from './components/NoMatch';
+import Secured from './components/Secured';
 
 
 // https://reacttraining.com/react-router/web/guides/philosophy
@@ -61,7 +62,8 @@ import NoMatch from './components/NoMatch';
 // https://redux.js.org/basics/example-todo-list#entry-point
 // https://www.valentinog.com/blog/react-redux-tutorial-beginners/
 
-
+// https://github.com/S64/types-react-cookie
+// http://blog.slatepeak.com/build-a-react-redux-app-with-json-web-token-jwt-authentication/
 
 interface INavbarProps {
     title: string
@@ -119,6 +121,13 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
                 </List>
                 <Divider/>
                 <List>
+                    <NavLink className={classes.navLink} to="/login" activeClassName="active">
+                        <ListItem button={true}>
+                            <ListItemText>Login</ListItemText>
+                        </ListItem>
+                    </NavLink>
+                </List>
+                <List>
                     <ListItem button={true}>
                         <ListItemText>Logout</ListItemText>
                     </ListItem>
@@ -129,10 +138,11 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
         const routes = (
             <Switch>
                 <Route path="/" component={Home} exact={true}/>
-                <Route path="/Login" component={Login}/>
+                <Route path="/login" component={Login}/>
                 <Route path="/hero/:id" component={HeroEdit}/>
                 <Route path="/hero" component={HeroCreate}/>
                 <Route path="/heroes" component={HeroTable}/>
+                <Route path="/secured" component={Secured}/>
                 <Route component={NoMatch}/>
             </Switch>
         );

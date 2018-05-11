@@ -62,9 +62,9 @@ class Login extends React.Component<ILoginProps & INotificationProps & RouteComp
 
                 this.props.loginUser();
 
-                this.props.cookies!.set('token', response.data.token, {path: '/'});
+                this.props.cookies!.set('auth-user', response, {path: '/'});
 
-                window.location.href = '/home';
+                this.props.history.push('/secured');
             })
             .catch(error => {
                 this.props.sendNotification('login: ' + error.message);
