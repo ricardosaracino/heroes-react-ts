@@ -4,16 +4,20 @@ import {connect} from 'react-redux';
 
 import {RouteComponentProps} from 'react-router';
 
+import {CookieComponentProps, withCookies} from 'react-cookie';
+
 import {Button, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
+import {LoginService} from '../AuthService';
 
-import {sendNotification} from '../actions/index';
+import {loginUser, sendNotification} from '../actions/index';
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        sendNotification: (message: string) => dispatch(sendNotification(message))
+        loginUser: () => dispatch(loginUser()),
+        sendNotification: (message: string) => dispatch(sendNotification(message)),
     };
 };
 
@@ -21,12 +25,18 @@ interface INotificationProps {
     sendNotification: (message: string) => void
 }
 
+interface ILoginProps {
+    loginUser: () => void
+}
+
 interface ILoginState {
     username: string,
     password: string,
 }
 
-class Login extends React.Component<INotificationProps & RouteComponentProps<{}> & WithStyles<ComponentClassNames>, ILoginState> {
+class Login extends React.Component<ILoginProps & INotificationProps & RouteComponentProps<{}> & WithStyles<ComponentClassNames> & CookieComponentProps, ILoginState> {
+
+    private loginService = new LoginService();
 
     constructor(props: any) {
         super(props);
@@ -47,7 +57,18 @@ class Login extends React.Component<INotificationProps & RouteComponentProps<{}>
 
     public handleSubmit(event: React.FormEvent<any>) {
 
-        console.log('handleSubmit');
+        this.loginService.login(this.state.username, this.state.password)
+            .then(response => {
+
+                this.props.loginUser();
+
+                this.props.cookies!.set('token', response.data.token, {path: '/'});
+
+                window.location.href = '/home';
+            })
+            .catch(error => {
+                this.props.sendNotification('login: ' + error.message);
+            });
     }
 
     public render() {
@@ -110,4 +131,4 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(withStyles(style)(Login));
+export default withCookies(connect(null, mapDispatchToProps)(withStyles(style)(Login)));

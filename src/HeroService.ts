@@ -3,14 +3,14 @@ import {HeroModel} from './HeroModel';
 
 export class HeroService{
 
-    private heroesUrl = 'http://localhost:8030/heroes';
+    private endpoint = 'http://localhost:8030/heroes';
 
     /**
      * GET
      * @returns {Promise<HeroModel[]>}
      */
     public getHeroes(): Promise<HeroModel[]> {
-        return fetch(this.heroesUrl).then(response => {
+        return fetch(this.endpoint).then(response => {
 
             if (!response.ok) {
                 throw new Error(response.statusText);
@@ -26,7 +26,7 @@ export class HeroService{
      */
     public getHero(id: string): Promise<HeroModel> {
 
-        return fetch(`${this.heroesUrl}/${id}`).then(response => {
+        return fetch(`${this.endpoint}/${id}`).then(response => {
 
             if (!response.ok) {
                 throw new Error(response.statusText);
@@ -43,7 +43,7 @@ export class HeroService{
      */
     public addHero(hero: HeroModel): Promise<any> {
 
-        return fetch(this.heroesUrl, {
+        return fetch(this.endpoint, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(hero)
@@ -63,7 +63,7 @@ export class HeroService{
      */
     public updateHero(hero: HeroModel): Promise<any> {
 
-        return fetch(this.heroesUrl, {
+        return fetch(this.endpoint, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(hero)
@@ -83,7 +83,7 @@ export class HeroService{
      */
     public deleteHero(hero: HeroModel): Promise<any> {
 
-        return fetch(this.heroesUrl, {
+        return fetch(this.endpoint, {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(hero) // todo just need _rev & _id

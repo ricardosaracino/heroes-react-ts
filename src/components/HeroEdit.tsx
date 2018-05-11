@@ -71,9 +71,10 @@ class HeroEdit extends React.Component<INotificationProps & RouteComponentProps<
 
         this.heroService.updateHero(this.state.hero)
             .then(response => {
-                this.props.history.push('/heroes');
 
                 this.props.sendNotification('updateHero: ' + response.name);
+
+                this.props.history.push('/heroes');
             })
             .catch(error => {
                 this.props.sendNotification('updateHero: ' + error.message);
@@ -84,9 +85,10 @@ class HeroEdit extends React.Component<INotificationProps & RouteComponentProps<
 
         this.heroService.deleteHero(this.state.hero)
             .then(response => {
-                this.props.history.push('/heroes');
 
                 this.props.sendNotification('deleteHero: ' + this.state.hero.name);
+
+                this.props.history.push('/heroes');
             })
             .catch(error => {
                 this.props.sendNotification('deleteHero: ' + error.message);
