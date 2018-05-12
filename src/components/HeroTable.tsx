@@ -8,8 +8,8 @@ import {Paper, Table, TableBody, TableCell, TableHead, TableRow, Theme} from 'ma
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {HeroModel} from '../HeroModel';
 import {HeroService} from '../HeroService';
+import {HeroModel} from '../models/HeroModel';
 
 import {sendNotification} from '../actions/index';
 

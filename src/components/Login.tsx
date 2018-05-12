@@ -12,11 +12,14 @@ import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import {LoginService} from '../AuthService';
 
+import {AuthUser} from '../models/AuthUser';
+
 import {loginUser, sendNotification} from '../actions/index';
+
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        loginUser: () => dispatch(loginUser()),
+        loginUser: (authUser: AuthUser) => dispatch(loginUser(authUser)),
         sendNotification: (message: string) => dispatch(sendNotification(message)),
     };
 };
@@ -26,7 +29,7 @@ interface INotificationProps {
 }
 
 interface ILoginProps {
-    loginUser: () => void
+    loginUser: (authUser: AuthUser) => void
 }
 
 interface ILoginState {
@@ -60,7 +63,7 @@ class Login extends React.Component<ILoginProps & INotificationProps & RouteComp
         this.loginService.login(this.state.username, this.state.password)
             .then(response => {
 
-                this.props.loginUser();
+                this.props.loginUser(response);
 
                 this.props.cookies!.set('auth-user', response, {path: '/'});
 

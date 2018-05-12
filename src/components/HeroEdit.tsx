@@ -8,8 +8,8 @@ import {Button, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {HeroModel} from '../HeroModel';
 import {HeroService} from '../HeroService';
+import {HeroModel} from '../models/HeroModel';
 
 import {sendNotification} from '../actions/index';
 

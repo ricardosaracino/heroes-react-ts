@@ -1,4 +1,4 @@
-import {HeroModel} from './HeroModel';
+import {HeroModel} from './models/HeroModel';
 
 export class HeroService {
 

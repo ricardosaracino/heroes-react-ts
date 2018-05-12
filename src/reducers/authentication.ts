@@ -5,7 +5,7 @@ const INITIAL_STATE = {error: '', message: '', content: '', authenticated: false
 const authentication = (state = INITIAL_STATE, action: any) => {
     switch (action.type) {
         case AUTH_USER:
-            return {...state, error: '', message: '', authenticated: true};
+            return {...state, authUser: action.authUser, authenticated: true};
         case UNAUTH_USER:
             return {...state, authenticated: false};
         case AUTH_ERROR:

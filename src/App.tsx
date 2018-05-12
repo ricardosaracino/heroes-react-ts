@@ -12,16 +12,17 @@ import Navbar from './Navbar';
 import Notification from './components/Notification';
 
 import {loginUser} from './actions/index';
+import {AuthUser} from "./models/AuthUser";
 
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        loginUser: () => dispatch(loginUser())
+        loginUser: (authUser: AuthUser) => dispatch(loginUser(authUser))
     };
 };
 
 interface ILoginProps {
-    loginUser: () => void
+    loginUser: (authUser: AuthUser) => void
 }
 
 class App extends React.Component<CookieComponentProps & ILoginProps, {}> {
@@ -30,7 +31,7 @@ class App extends React.Component<CookieComponentProps & ILoginProps, {}> {
         super(props);
 
         if (props.cookies.get('auth-user')) {
-            props.loginUser();
+            props.loginUser(props.cookies.get('auth-user'));
         }
     }
 

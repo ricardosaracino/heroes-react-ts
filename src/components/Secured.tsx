@@ -6,16 +6,19 @@ import {StyleRules, WithStyles, withStyles} from 'material-ui/styles';
 
 import {Theme} from 'material-ui';
 
+import {AuthUser} from '../models/AuthUser';
+
 
 interface IAuthenticationProps {
-    authentication: {error: '', message: '', content: '', authenticated: false}
+    authentication: {authUser:AuthUser, authenticated: false}
 }
 
 const mapStateToProps = (state: IAuthenticationProps) => {
-    return {authenticated: state.authentication.authenticated};
+    return {authUser: state.authentication.authUser, authenticated: state.authentication.authenticated};
 };
 
 interface IAuthenticatedProps{
+    authUser: AuthUser,
     authenticated: false
 }
 
@@ -29,7 +32,7 @@ class Secured extends React.Component<IAuthenticatedProps & WithStyles<Component
 
         if (this.props.authenticated) {
             return (
-                <h1>Secured</h1>
+                <h1>Secured {this.props.authUser.username}</h1>
             );
         }
 

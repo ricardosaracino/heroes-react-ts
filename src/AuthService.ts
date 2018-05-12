@@ -1,9 +1,11 @@
 
+import {AuthUser} from './models/AuthUser';
+
 export class LoginService{
 
     private endpoint = 'http://localhost:8030/authenticate';
 
-    public login(username:string, password: string): Promise<any> {
+    public login(username:string, password: string): Promise<AuthUser> {
 
         return fetch(this.endpoint, {
             method: 'POST',
