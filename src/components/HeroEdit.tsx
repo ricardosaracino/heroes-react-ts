@@ -30,6 +30,7 @@ interface IHeroState {
 interface IRouteParams {
     id: string
 }
+
 class HeroEdit extends React.Component<INotificationProps & RouteComponentProps<IRouteParams> & WithStyles<ComponentClassNames>, IHeroState> {
 
     private heroService = new HeroService;
@@ -48,7 +49,7 @@ class HeroEdit extends React.Component<INotificationProps & RouteComponentProps<
 
     public componentDidMount() {
 
-        if(this.props.match.params.id) {
+        if (this.props.match.params.id) {
 
             this.heroService.getHero(this.props.match.params.id)
                 .then(response => {

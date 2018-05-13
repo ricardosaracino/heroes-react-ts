@@ -1,6 +1,13 @@
 import * as React from 'react';
 
-import {Route, Switch} from 'react-router';
+import {BrowserRouter} from 'react-router-dom';
+
+
+import {CookieComponentProps, withCookies} from 'react-cookie';
+
+import {connect} from 'react-redux';
+
+import {Route, RouteComponentProps, Switch} from 'react-router';
 import {NavLink} from 'react-router-dom';
 
 import {AppBar, Divider, Drawer, Hidden, IconButton} from 'material-ui';
@@ -8,6 +15,10 @@ import {List, ListItem, ListItemText, Theme, Toolbar, Typography} from 'material
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import MenuIcon from '@material-ui/icons/Menu';
+
+import {AuthUser} from './models/AuthUser';
+
+import {logoutUser} from './actions/index';
 
 import HeroCreate from './components/HeroCreate';
 import HeroEdit from './components/HeroEdit';
@@ -18,52 +29,31 @@ import NoMatch from './components/NoMatch';
 import Secured from './components/Secured';
 
 
-// https://reacttraining.com/react-router/web/guides/philosophy
-// https://material-ui-next.com/demos/
+
+interface IAuthenticationProps {
+    authentication: { authUser: AuthUser, authenticated: false }
+}
+
+const mapStateToProps = (state: IAuthenticationProps) => {
+    return {authUser: state.authentication.authUser, authenticated: state.authentication.authenticated};
+};
+
+interface IAuthenticatedProps {
+    authUser: AuthUser,
+    authenticated: false
+}
 
 
-// https://jaysoo.ca/2015/09/26/typed-react-and-redux/
-// https://github.com/IrfanBaqui/react-router-v4-tutorial/blob/master/09_Router_Config/src/App.js
-// https://github.com/tastejs/todomvc/tree/master/examples/typescript-react/js
-// https://github.com/mui-org/material-ui/tree/v1-beta/docs/src/pages/demos
-// https://github.com/mui-org/material-ui/tree/v1-beta/examples/create-react-app-with-typescript
-// https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb
-// https://medium.com/@liangchun/integrating-material-ui-next-with-your-react-typescript-project-80847f7eab64
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        logoutUser: () => dispatch(logoutUser()),
+    };
+};
 
+interface ILogoutProps {
+    logoutUser: () => void
+}
 
-// https://itnext.io/using-advanced-design-patterns-to-create-flexible-and-reusable-react-components-part-3-render-d7517dfe72bc
-
-
-// authentication https://levelup.gitconnected.com/react-and-redux-with-typescript-da0c37537a79
-// https://www.javascriptstuff.com/react-ajax-best-practices/
-// https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
-// https://github.com/bitinn/node-fetch
-
-// https://github.com/tastejs/todomvc/blob/master/examples/typescript-react/js/interfaces.d.ts
-// https://hackernoon.com/why-im-switching-from-angular-to-react-and-redux-in-2018-cb48be00fda7
-// https://medium.com/@tmkelly28/handling-multiple-form-inputs-in-react-c5eb83755d15
-// https://stackoverflow.com/questions/23481061/reactjs-state-vs-prop
-
-
-// http://davidwalsh.name/fetch
-// https://stackoverflow.com/questions/41103360/how-to-use-fetch-in-typescript
-
-// https://github.com/tastejs/todomvc/blob/master/examples/typescript-react/js/interfaces.d.ts
-// https://hackernoon.com/why-im-switching-from-angular-to-react-and-redux-in-2018-cb48be00fda7
-// https://medium.com/@tmkelly28/handling-multiple-form-inputs-in-react-c5eb83755d15
-// https://stackoverflow.com/questions/23481061/reactjs-state-vs-prop
-
-// https://github.com/react-navigation/react-navigation/tree/master/src/views/Drawer
-
-
-// https://redux.js.org/basics/example-todo-list
-// https://stackoverflow.com/questions/41386427/showing-snackbar-with-react-redux
-
-// https://redux.js.org/basics/example-todo-list#entry-point
-// https://www.valentinog.com/blog/react-redux-tutorial-beginners/
-
-// https://github.com/S64/types-react-cookie
-// http://blog.slatepeak.com/build-a-react-redux-app-with-json-web-token-jwt-authentication/
 
 interface INavbarProps {
     title: string
@@ -73,7 +63,7 @@ interface INavbarState {
     mobileOpen: boolean,
 }
 
-class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNames>, INavbarState> {
+class Navbar extends React.Component<IAuthenticatedProps & ILogoutProps & INavbarProps & CookieComponentProps & RouteComponentProps<any> & WithStyles<ComponentClassNames>, INavbarState> {
 
     constructor(props: any) {
         super(props);
@@ -82,6 +72,7 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
 
         this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
         this.handleDrawerClose = this.handleDrawerClose.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
     }
 
     public handleDrawerToggle() {
@@ -91,6 +82,16 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
     public handleDrawerClose() {
         this.setState({mobileOpen: false});
     };
+
+    public handleLogout() {
+
+        // todo   this.loginService.logout
+
+        // stored as a string to null is returned as "null"
+        this.props.cookies!.set('auth-user', '');
+
+        this.props.logoutUser();
+    }
 
     public render() {
 
@@ -121,14 +122,7 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
                 </List>
                 <Divider/>
                 <List>
-                    <NavLink className={classes.navLink} to="/login" activeClassName="active">
-                        <ListItem button={true}>
-                            <ListItemText>Login</ListItemText>
-                        </ListItem>
-                    </NavLink>
-                </List>
-                <List>
-                    <ListItem button={true}>
+                    <ListItem button={true} onClick={this.handleLogout}>
                         <ListItemText>Logout</ListItemText>
                     </ListItem>
                 </List>
@@ -147,55 +141,59 @@ class Navbar extends React.Component<INavbarProps & WithStyles<ComponentClassNam
             </Switch>
         );
 
+        console.log(routes);
+
         return (
-            <div className={classes.root}>
-                <AppBar className={classes.appBar} position="sticky">
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={this.handleDrawerToggle}
-                            className={classes.navIconHide}
+            <BrowserRouter>
+                <div className={classes.root}>
+                    <AppBar className={classes.appBar} position="sticky">
+                        <Toolbar>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={this.handleDrawerToggle}
+                                className={classes.navIconHide}
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                            <Typography variant="title" color="inherit" noWrap={true}>
+                                {title}
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
+                    <Hidden mdUp={true}>
+                        <Drawer
+                            variant="temporary"
+                            anchor='left'
+                            open={this.state.mobileOpen}
+                            onClose={this.handleDrawerToggle}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                            ModalProps={{
+                                keepMounted: true, // Better open performance on mobile.
+                            }}
                         >
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant="title" color="inherit" noWrap={true}>
-                            {title}
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Hidden mdUp={true}>
-                    <Drawer
-                        variant="temporary"
-                        anchor='left'
-                        open={this.state.mobileOpen}
-                        onClose={this.handleDrawerToggle}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
-                        }}
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-                <Hidden smDown={true} implementation="css">
-                    <Drawer
-                        variant="permanent"
-                        open={true}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                    >
-                        {drawer}
-                    </Drawer>
-                </Hidden>
-                <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    {routes}
-                </main>
-            </div>
+                            {drawer}
+                        </Drawer>
+                    </Hidden>
+                    <Hidden smDown={true} implementation="css">
+                        <Drawer
+                            variant="permanent"
+                            open={true}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                        >
+                            {drawer}
+                        </Drawer>
+                    </Hidden>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar}/>
+                        {routes}
+                    </main>
+                </div>
+            </BrowserRouter>
         );
     }
 }
@@ -239,10 +237,13 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     drawerPaper: {
         width: drawerWidth,
         [theme.breakpoints.up('md')]: {
-            position: 'relative',
+            position: 'fixed',
         },
     },
     content: {
+        [theme.breakpoints.up('md')]: {
+            marginLeft: drawerWidth,
+        },
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing.unit * 3,
@@ -252,4 +253,5 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     },
 });
 
-export default withStyles(style, {withTheme: true})<INavbarProps>(Navbar);
+
+export default withCookies(connect(mapStateToProps, mapDispatchToProps)(withStyles(style, {withTheme: true})(Navbar)));

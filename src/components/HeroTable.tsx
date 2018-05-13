@@ -33,7 +33,7 @@ class HeroTable extends React.Component<INotificationProps & WithStyles<Componen
 
     constructor(props: any) {
         super(props);
-        this.state = {heroes:[]};
+        this.state = {heroes: []};
     }
 
     public componentDidMount() {
@@ -44,7 +44,7 @@ class HeroTable extends React.Component<INotificationProps & WithStyles<Componen
                 });
             })
             .catch(error => {
-                this.props.sendNotification('herotable: ' +error.message);
+                this.props.sendNotification('herotable: ' + error.message);
             });
     }
 

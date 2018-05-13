@@ -1,9 +1,5 @@
-html, body, main, #root, .App {
-  margin: 0;
-  height: 100%;
-}
-
 body {
   padding: 0;
+  margin: 0;
   font-family: sans-serif;
 }

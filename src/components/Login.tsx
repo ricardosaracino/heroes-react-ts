@@ -37,7 +37,7 @@ interface ILoginState {
     password: string,
 }
 
-class Login extends React.Component<ILoginProps & INotificationProps & RouteComponentProps<{}> & WithStyles<ComponentClassNames> & CookieComponentProps, ILoginState> {
+class Login extends React.Component<ILoginProps & INotificationProps & CookieComponentProps & RouteComponentProps<{}> & WithStyles<ComponentClassNames>, ILoginState> {
 
     private loginService = new LoginService();
 
@@ -66,8 +66,6 @@ class Login extends React.Component<ILoginProps & INotificationProps & RouteComp
                 this.props.loginUser(response);
 
                 this.props.cookies!.set('auth-user', response, {path: '/'});
-
-                this.props.history.push('/secured');
             })
             .catch(error => {
                 this.props.sendNotification('login: ' + error.message);
@@ -80,7 +78,7 @@ class Login extends React.Component<ILoginProps & INotificationProps & RouteComp
 
         return (
             <div className={classes.root}>
-                <h1>Login</h1>
+                <h1>Tour of Heroes</h1>
 
                 <TextField
                     label='Username'
@@ -106,7 +104,7 @@ class Login extends React.Component<ILoginProps & INotificationProps & RouteComp
                     className={classes.button}
                     onClick={this.handleSubmit}
                 >
-                    Save
+                    Login
                 </Button>
             </div>
         );
@@ -121,7 +119,8 @@ type ComponentClassNames =
 
 const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     root: {
-        width: '100%',
+        margin: '0 auto',
+        width: '300px',
         overflowX: 'auto',
     },
 

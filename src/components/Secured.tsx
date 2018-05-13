@@ -10,14 +10,14 @@ import {AuthUser} from '../models/AuthUser';
 
 
 interface IAuthenticationProps {
-    authentication: {authUser:AuthUser, authenticated: false}
+    authentication: { authUser: AuthUser, authenticated: boolean }
 }
 
 const mapStateToProps = (state: IAuthenticationProps) => {
     return {authUser: state.authentication.authUser, authenticated: state.authentication.authenticated};
 };
 
-interface IAuthenticatedProps{
+interface IAuthenticatedProps {
     authUser: AuthUser,
     authenticated: false
 }
