@@ -65,6 +65,7 @@ class App extends React.Component<IAuthenticatedProps & ILoginProps & CookieComp
             );
         }
 
+        // todo on refresh im landing here before navbar is shown
         return (
             <Login/>
         );

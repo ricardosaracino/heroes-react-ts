@@ -61,4 +61,4 @@ https://github.com/S64/types-react-cookie
 
 http://blog.slatepeak.com/build-a-react-redux-app-with-json-web-token-jwt-authentication/
 
-
+https://stackoverflow.com/questions/38460949/what-is-the-best-way-to-access-redux-store-outside-a-react-component#41172768

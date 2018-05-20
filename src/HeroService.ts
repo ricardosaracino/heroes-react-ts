@@ -1,5 +1,7 @@
 import {HeroModel} from './models/HeroModel';
 
+import apiFetch from './FetchService';
+
 export class HeroService {
 
     private endpoint = 'http://localhost:8030/heroes';
@@ -9,16 +11,10 @@ export class HeroService {
      * @returns {Promise<HeroModel[]>}
      */
     public getHeroes(): Promise<HeroModel[]> {
-        return fetch(this.endpoint, {
+        return apiFetch(this.endpoint, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'},
             credentials: 'include'
-        }).then(response => {
-
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
         });
     }
 

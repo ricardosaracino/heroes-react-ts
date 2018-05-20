@@ -17,7 +17,7 @@ interface IAuthenticatedProps {
     authenticated: false
 }
 
-export default function (ComposedComponent: any, roles?: any) {
+export default function (ComposedComponent: any, roles: string[] = []) {
 
     class Authentication extends Component<IAuthenticatedProps & RouteComponentProps<any>, {}> {
 
