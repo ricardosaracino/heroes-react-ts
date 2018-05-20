@@ -2,12 +2,11 @@ import * as React from 'react';
 
 import {BrowserRouter} from 'react-router-dom';
 
-
 import {CookieComponentProps, withCookies} from 'react-cookie';
 
 import {connect} from 'react-redux';
 
-import {Route, RouteComponentProps, Switch} from 'react-router';
+import {RouteComponentProps} from 'react-router';
 import {NavLink} from 'react-router-dom';
 
 import {AppBar, Divider, Drawer, Hidden, IconButton} from 'material-ui';
@@ -16,18 +15,11 @@ import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
-import {AuthUser} from './models/AuthUser';
+import {AuthUser} from '../models/AuthUser';
 
-import {logoutUser} from './actions/index';
+import {logoutUser} from '../actions/index';
 
-import HeroCreate from './components/HeroCreate';
-import HeroEdit from './components/HeroEdit';
-import HeroTable from './components/HeroTable';
-import Home from './components/Home';
-import Login from './components/Login';
-import NoMatch from './components/NoMatch';
-import Secured from './components/Secured';
-
+import routes from '../routes';
 
 
 interface IAuthenticationProps {
@@ -53,7 +45,6 @@ const mapDispatchToProps = (dispatch: any) => {
 interface ILogoutProps {
     logoutUser: () => void
 }
-
 
 interface INavbarProps {
     title: string
@@ -88,7 +79,8 @@ class Navbar extends React.Component<IAuthenticatedProps & ILogoutProps & INavba
         // todo   this.loginService.logout
 
         // stored as a string to null is returned as "null"
-        this.props.cookies!.set('auth-user', '');
+        // this.props.cookies!.set('auth-user', '');
+        localStorage.removeItem('authUser');
 
         this.props.logoutUser();
     }
@@ -128,20 +120,6 @@ class Navbar extends React.Component<IAuthenticatedProps & ILogoutProps & INavba
                 </List>
             </div>
         );
-
-        const routes = (
-            <Switch>
-                <Route path="/" component={Home} exact={true}/>
-                <Route path="/login" component={Login}/>
-                <Route path="/hero/:id" component={HeroEdit}/>
-                <Route path="/hero" component={HeroCreate}/>
-                <Route path="/heroes" component={HeroTable}/>
-                <Route path="/secured" component={Secured}/>
-                <Route component={NoMatch}/>
-            </Switch>
-        );
-
-        console.log(routes);
 
         return (
             <BrowserRouter>

@@ -4,17 +4,16 @@ import {connect} from 'react-redux';
 
 import {CookieComponentProps, withCookies} from 'react-cookie';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import Login from "./components/Login";
+import createMuiTheme from 'material-ui/styles/createMuiTheme';
+
+import Login from './components/Login';
+import Navbar from './components/Navbar';
 import Notification from './components/Notification';
-import Navbar from './Navbar';
 
 import {loginUser} from './actions/index';
-import {AuthUser} from "./models/AuthUser";
-
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-
-import createMuiTheme from "material-ui/styles/createMuiTheme";
+import {AuthUser} from './models/AuthUser';
 
 
 
@@ -22,7 +21,7 @@ interface IAuthenticationProps {
     authentication: { authUser: AuthUser, authenticated: false }
 }
 
-const mapActionToProps = (state: IAuthenticationProps) => {
+const mapStateToProps = (state: IAuthenticationProps) => {
     return {authUser: state.authentication.authUser, authenticated: state.authentication.authenticated};
 };
 
@@ -48,12 +47,13 @@ class App extends React.Component<IAuthenticatedProps & ILoginProps & CookieComp
     constructor(props: any) {
         super(props);
 
+        // const authUser = props.cookies.get('auth-user');
 
-        const authUser = props.cookies.get('auth-user');
+        const authUserJson = localStorage.getItem('authUser');
 
-        if (authUser) {
+        if (authUserJson) {
             // todo could refresh auth user
-            props.loginUser(authUser);
+            props.loginUser(JSON.parse(authUserJson));
         }
     }
 
@@ -80,16 +80,13 @@ class App extends React.Component<IAuthenticatedProps & ILoginProps & CookieComp
 
         return (
             <div  className='App'>
-
                 <MuiThemeProvider theme={theme}>
                     {this.renderAuth()}
                     <Notification/>
-
                 </MuiThemeProvider>
             </div>
         );
     }
 }
 
-
-export default withCookies(connect(mapActionToProps, mapDispatchToProps)(App));
+export default withCookies(connect(mapStateToProps, mapDispatchToProps)(App));

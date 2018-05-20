@@ -65,7 +65,9 @@ class Login extends React.Component<ILoginProps & INotificationProps & CookieCom
 
                 this.props.loginUser(response);
 
-                this.props.cookies!.set('auth-user', response, {path: '/'});
+                localStorage.setItem('authUser', JSON.stringify(response));
+
+                // this.props.cookies!.set('auth-user', response, {path: '/'});
             })
             .catch(error => {
                 this.props.sendNotification('login: ' + error.message);
