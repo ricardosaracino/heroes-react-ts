@@ -1,27 +1,52 @@
+import apiFetch from './FetchService';
+
+import store from './store';
+
+import {loginUser, logoutUser} from './actions';
 
 import {AuthUser} from './models/AuthUser';
 
-export class LoginService{
+export class AuthService {
 
     private endpoint = 'http://localhost:8030/authenticate';
 
-    public login(username:string, password: string): Promise<AuthUser> {
+    public login(username: string, password: string): Promise<AuthUser> {
 
-        return fetch(this.endpoint, {
+        return apiFetch(this.endpoint, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
             body: JSON.stringify({username, password})
+
+        }).then(authUser => {
+
+            localStorage.setItem('authUser', JSON.stringify(authUser));
+
+            store.dispatch(loginUser(authUser));
+
+            return authUser;
+        });
+    }
+
+    public checkLogin()
+    {
+        const authUserJson = localStorage.getItem('authUser');
+
+        if (authUserJson) {
+
+            // todo could refresh auth user
+            store.dispatch(loginUser(JSON.parse(authUserJson)));
+        }
+    }
+
+    public logout() : Promise<any> {
+
+        return apiFetch(this.endpoint, {
+            method: 'DELETE',
         }).then(response => {
 
-            const headers = response.headers.get('set-cookie');
+            localStorage.removeItem('authUser');
 
-            console.log(headers);
+            store.dispatch(logoutUser());
 
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json();
         });
     }
 }

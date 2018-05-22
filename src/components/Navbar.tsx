@@ -2,11 +2,8 @@ import * as React from 'react';
 
 import {BrowserRouter} from 'react-router-dom';
 
-import {CookieComponentProps, withCookies} from 'react-cookie';
-
 import {connect} from 'react-redux';
 
-import {RouteComponentProps} from 'react-router';
 import {NavLink} from 'react-router-dom';
 
 import {AppBar, Divider, Drawer, Hidden, IconButton} from 'material-ui';
@@ -15,15 +12,17 @@ import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
-import {AuthUser} from '../models/AuthUser';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
-import {logoutUser} from '../actions/index';
 
 import routes from '../routes';
 
+import {AuthService} from '../AuthService';
+
+import {AuthUser} from '../models/AuthUser';
 
 interface IAuthenticationProps {
-    authentication: { authUser: AuthUser, authenticated: false }
+    authentication: { authUser: AuthUser, authenticated: false}
 }
 
 const mapStateToProps = (state: IAuthenticationProps) => {
@@ -32,29 +31,16 @@ const mapStateToProps = (state: IAuthenticationProps) => {
 
 interface IAuthenticatedProps {
     authUser: AuthUser,
-    authenticated: false
-}
-
-
-const mapDispatchToProps = (dispatch: any) => {
-    return {
-        logoutUser: () => dispatch(logoutUser()),
-    };
-};
-
-interface ILogoutProps {
-    logoutUser: () => void
-}
-
-interface INavbarProps {
-    title: string
+    authenticated: boolean
 }
 
 interface INavbarState {
-    mobileOpen: boolean,
+    mobileOpen: boolean
 }
 
-class Navbar extends React.Component<IAuthenticatedProps & ILogoutProps & INavbarProps & CookieComponentProps & RouteComponentProps<any> & WithStyles<ComponentClassNames>, INavbarState> {
+class Navbar extends React.Component<IAuthenticatedProps & WithStyles<ComponentClassNames>, INavbarState> {
+
+    private authService = new AuthService();
 
     constructor(props: any) {
         super(props);
@@ -75,19 +61,15 @@ class Navbar extends React.Component<IAuthenticatedProps & ILogoutProps & INavba
     };
 
     public handleLogout() {
-
-        // todo   this.loginService.logout
-
-        // stored as a string to null is returned as "null"
-        // this.props.cookies!.set('auth-user', '');
-        localStorage.removeItem('authUser');
-
-        this.props.logoutUser();
+        this.authService.logout()
+            .catch(error => {
+                // this.props.sendNotification('logout: ' + error.message);
+            });
     }
 
     public render() {
 
-        const {classes, title = ''} = this.props;
+        const {classes} = this.props;
 
         const drawer = (
             <div role="button" onClick={this.handleDrawerClose}>
@@ -134,10 +116,15 @@ class Navbar extends React.Component<IAuthenticatedProps & ILogoutProps & INavba
                             >
                                 <MenuIcon/>
                             </IconButton>
-                            <Typography variant="title" color="inherit" noWrap={true}>
-                                {title}
+                            <Typography variant="title" color="inherit" noWrap={true} className={classes.flex}>
+                                Tour of Heroes
                             </Typography>
+
+                            <IconButton color="inherit">
+                                <AccountCircle />
+                            </IconButton>
                         </Toolbar>
+
                     </AppBar>
                     <Hidden mdUp={true}>
                         <Drawer
@@ -179,6 +166,8 @@ class Navbar extends React.Component<IAuthenticatedProps & ILogoutProps & INavba
 type ComponentClassNames =
     | 'root'
     | 'appBar'
+    | 'flex'
+
     | 'navIconHide'
     | 'toolbar'
     | 'content'
@@ -206,6 +195,9 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
             width: `calc(100% - ${drawerWidth}px)`,
         },
     },
+    flex: {
+        flex: 1,
+    },
     navIconHide: {
         [theme.breakpoints.up('md')]: {
             display: 'none',
@@ -231,5 +223,4 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     },
 });
 
-
-export default withCookies(connect(mapStateToProps, mapDispatchToProps)(withStyles(style, {withTheme: true})(Navbar)));
+export default connect(mapStateToProps, null)(withStyles(style, {withTheme: true})(Navbar));

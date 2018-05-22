@@ -2,24 +2,16 @@ import * as React from 'react';
 
 import {connect} from 'react-redux';
 
-import {RouteComponentProps} from 'react-router';
-
-import {CookieComponentProps, withCookies} from 'react-cookie';
-
 import {Button, TextField, Theme} from 'material-ui';
 
 import {StyleRules, withStyles, WithStyles} from 'material-ui/styles/index';
 
-import {LoginService} from '../AuthService';
+import {sendNotification} from '../actions/index';
 
-import {AuthUser} from '../models/AuthUser';
-
-import {loginUser, sendNotification} from '../actions/index';
-
+import {AuthService} from "../AuthService";
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        loginUser: (authUser: AuthUser) => dispatch(loginUser(authUser)),
         sendNotification: (message: string) => dispatch(sendNotification(message)),
     };
 };
@@ -28,18 +20,14 @@ interface INotificationProps {
     sendNotification: (message: string) => void
 }
 
-interface ILoginProps {
-    loginUser: (authUser: AuthUser) => void
-}
-
 interface ILoginState {
     username: string,
     password: string,
 }
 
-class Login extends React.Component<ILoginProps & INotificationProps & CookieComponentProps & RouteComponentProps<{}> & WithStyles<ComponentClassNames>, ILoginState> {
+class Login extends React.Component<INotificationProps & WithStyles<ComponentClassNames>, ILoginState> {
 
-    private loginService = new LoginService();
+    private authService = new AuthService();
 
     constructor(props: any) {
         super(props);
@@ -60,15 +48,7 @@ class Login extends React.Component<ILoginProps & INotificationProps & CookieCom
 
     public handleSubmit(event: React.FormEvent<any>) {
 
-        this.loginService.login(this.state.username, this.state.password)
-            .then(response => {
-
-                this.props.loginUser(response);
-
-                localStorage.setItem('authUser', JSON.stringify(response));
-
-                // this.props.cookies!.set('auth-user', response, {path: '/'});
-            })
+        this.authService.login(this.state.username, this.state.password)
             .catch(error => {
                 this.props.sendNotification('login: ' + error.message);
             });
@@ -135,4 +115,4 @@ const style = (theme: Theme): StyleRules<ComponentClassNames> => ({
     },
 });
 
-export default withCookies(connect(null, mapDispatchToProps)(withStyles(style)(Login)));
+export default connect(null, mapDispatchToProps)(withStyles(style)(Login));
